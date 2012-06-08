@@ -1,0 +1,13 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\MouseMovement.cs">
+    <Files>
+      <File FileName="Assets\MouseMovement.cs" Line="22" Column="38" />
+      <File FileName="..\Unity Zelda\Top Down Shooter Tutorial\Assets\Scripts\Movement\PlayerMoveController.js" Line="171" Column="58" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
