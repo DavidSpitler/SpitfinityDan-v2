@@ -9,11 +9,13 @@ public class MouseMovement : MonoBehaviour {
 	private CharacterMotor motor;
 	private RaycastHit hit;
 	private float nextAttack = 0;
+	private GarenScript player;
 	
 	// Use this for initialization
 	void Start () {
 		dest = transform.position;
 		motor = GetComponent(typeof(CharacterMotor)) as CharacterMotor;
+		player = gameObject.GetComponentInChildren(typeof(GarenScript)) as GarenScript;
 	}
 	
 	// Update is called once per frame
@@ -21,6 +23,8 @@ public class MouseMovement : MonoBehaviour {
 
 		//Check for mouse click and update destination
 		if(Input.GetButtonDown("Fire1")){
+			
+			player.setRunning(true);
 			
 			Ray ray = Camera.allCameras[0].ScreenPointToRay(Input.mousePosition);
 			
@@ -33,7 +37,7 @@ public class MouseMovement : MonoBehaviour {
 				}
 				else{
 			    dest = hit.point;
-				dest.y = 22.20f;
+				dest.y = 25.20f;
 			    direction = hit.point - transform.position;
 				direction.y = 22.20f;
 				if(direction.magnitude > 1)
@@ -49,6 +53,7 @@ public class MouseMovement : MonoBehaviour {
 		if(delta.magnitude < .1f){
 			transform.position = dest;
 			motor.inputMoveDirection = Vector3.zero;
+			player.setRunning(false);
 		}
 		
 		/*
