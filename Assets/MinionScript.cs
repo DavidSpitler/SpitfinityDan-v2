@@ -2,10 +2,11 @@ using UnityEngine;
 using System.Collections;
 
 public class MinionScript : MonoBehaviour {
-	public GameObject p;
+	public GameObject p; //Health bar plane 
 	private float currentHealth;
 	private float maxHealth;
 	private float originalXScale;
+	public GarenScript player;
 	
 	// Use this for initialization
 	void Start () {
@@ -25,9 +26,16 @@ public class MinionScript : MonoBehaviour {
 		;//Stun duration	
 	}
 	
+	public float getHealthPercent(){
+		return currentHealth / maxHealth;	
+	}
+	
 	public void damage(float amount){
 		currentHealth -= amount;
-		if(currentHealth < 0)
+		if(currentHealth < 0){
 			currentHealth = 0;
+			if(player.getCurrentEnemy() == this)
+				player.setCurrentEnemy(null);
+		}
 	}
 }

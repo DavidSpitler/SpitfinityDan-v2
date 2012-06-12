@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{4C20A640-CBAF-AD6A-37FE-B34B9A5A50F0}</ProjectGuid>
+	<ProjectGuid>{8748CE85-95EC-6E4A-E5E2-BBB68FC6DC39}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -37,17 +37,17 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>D:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>D:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Ability.cs" />
      <Compile Include="Assets\CamTargetScript.cs" />
      <Compile Include="Assets\EnemyHealthBarRotation.cs" />
-     <Compile Include="Assets\GarenScript.cs" />
+     <Compile Include="Assets\Garen.fbm\GarenScript.cs" />
      <Compile Include="Assets\MinionScript.cs" />
      <Compile Include="Assets\MouseMovement.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
-      <Project>{BCDDC229-24A3-DB63-FACC-06C6B248271A}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+      <Project>{78F282E4-1EDD-4AFB-DD21-E0F15E79EABB}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
