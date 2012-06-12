@@ -3,9 +3,20 @@ using System.Collections;
 
 public class GarenScript : MonoBehaviour {
 	public BoxCollider coneCollider;
+	
+	//Spells
 	private Decisive_Strike dStrike;
 	private Courage courage;
 	private Judgement judgement;
+	private Demacian_Justice dJustice;
+	private Valor valor;
+	
+	public Texture2D dStrikeTexture;
+	public Texture2D courageTexture;
+	public Texture2D judgementTexture;
+	public Texture2D dJusticeTexture;
+	
+	
 	private float nextAttack = 0;
 	private float currentHealth;
 	private bool courageActive;
@@ -13,6 +24,12 @@ public class GarenScript : MonoBehaviour {
 	private bool spinning;
 	private Animation a;
 	private bool running;
+	
+	private float WeaponDamage = 5;
+	private float WeaponSpeed = 1.5f;
+	
+	private int IconWidth;
+	private int IconHeight;
 	
 	/*
 	 * CONE
@@ -23,6 +40,29 @@ public class GarenScript : MonoBehaviour {
 	 * CENTER 12.7 104.9 52.8
 	 * SIZE: 316.1 179.23 328.3
 	 * */
+	
+	void OnGUI() {
+		GUI.BeginGroup(new Rect(Screen.width / 2 - (2 * IconWidth), Screen.height - 70, IconWidth * 4, IconHeight * 4));
+		
+		GUI.Button(new Rect(0, 0, IconWidth, IconHeight), dStrikeTexture);
+		GUI.Button(new Rect(IconWidth, 0, IconWidth, IconHeight), courageTexture);
+		GUI.Button(new Rect(IconWidth * 2, 0, IconWidth, IconHeight), judgementTexture);
+		GUI.Button(new Rect(IconWidth * 3, 0, IconWidth, IconHeight), dJusticeTexture);
+
+		GUI.EndGroup();
+		
+		//Creates mask over buttons based on cooldown.
+		
+		GUI.BeginGroup(new Rect(Screen.width / 2 - (2 * IconWidth), Screen.height - 70, IconWidth * 4, IconHeight * 4));
+		
+		GUI.Button(new Rect(0, 0, IconWidth, IconHeight * dStrike.getCooldown()), "");
+		GUI.Button(new Rect(IconWidth, 0, IconWidth, IconHeight * courage.getCooldown()), "");
+		GUI.Button(new Rect(IconWidth * 2, 0, IconWidth, IconHeight * judgement.getCooldown()), "");
+		GUI.Button(new Rect(IconWidth * 3, 0, IconWidth, IconHeight * dJustice.getCooldown()), "");
+		
+		GUI.EndGroup();
+				
+	}
 	
 	// Use this for initialization
 	void Start () {
@@ -35,6 +75,13 @@ public class GarenScript : MonoBehaviour {
 		courage.setScript(this);
 		judgement = new Judgement();
 		judgement.setScript(this);
+		dJustice = new Demacian_Justice();
+		dJustice.setScript(this);
+		valor = new Valor();
+		valor.setScript(this);
+		
+		IconWidth = judgementTexture.width;
+		IconHeight = judgementTexture.height;
 		
 		//Initially not running
 		running = false;
@@ -47,20 +94,26 @@ public class GarenScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Alpha1)){
-			judgement.Execute();
-			a.Play("Spell3");
-		}
-		/*if(spinning){ //This needs to be fixed - GameObject needed between top level GameObject and Garen Object
-			Quaternion rot = transform.localRotation;
-			rot.y += 1;
-			transform.localRotation = rot;
-		}*/
 		
-		if(Input.GetButtonDown("Fire2")){
+		//Check for spells being cast
+		if(Input.GetKeyDown(KeyCode.Alpha1)){
 			dStrike.Execute();
-			a.Stop();
-				a.Play("Spell1");
+		}
+		
+		else if(Input.GetKeyDown(KeyCode.Alpha2)){
+			courage.Execute();
+		}
+		
+		else if(Input.GetKeyDown(KeyCode.Alpha3)){
+			judgement.Execute();
+		}
+		
+		else if(Input.GetKeyDown(KeyCode.Alpha4)){
+			dJustice.Execute();
+		}
+		
+		else if(Input.GetButtonDown("Fire2")){ //Right click
+			valor.Execute();
 		}
 		
 		if(running && a.IsPlaying("Idle2")) {
@@ -70,25 +123,26 @@ public class GarenScript : MonoBehaviour {
 		else if (!a.isPlaying)
 			a.Play("Idle2");
 		
+		//Update all spells
 		courage.Update();
 		judgement.Update();
 	
 	}
 	
+	public void playAnimation(string animationName){
+		a.Stop();
+		a.Play(animationName);
+	}
+	
 	public void setRunning(bool active){
 		running = active;
-		/*if(!active){ //If stopped running
-			a.Stop();
-			a.Play("Idle2");
-		}*/
 	}
 	
 	public void setSpinning(bool active){
+		string animationName = active?"Spell3":"Idle2";
 		spinning = active;
-		if(!active){
 			a.Stop();
-			a.Play("Idle2");
-		}
+			a.Play(animationName);
 	}
 	
 	public bool isSpinning(){
@@ -117,16 +171,50 @@ public class GarenScript : MonoBehaviour {
 	}
 	
 	class Decisive_Strike : Ability {
+		
 		private GarenScript player;
+		private double totalDamage = 60;
+		private float nextAttack = 0;
+		private float coolDown = 5;
+		private string animationName = "Spell1";
+		
+		
 		public void Execute(){
-			BoxCollider collider = player.getConeCollider();
-			collider.enabled = true;
-			collider.center = new Vector3(12.7f, 101.9f, 91.5f);
-			collider.size = new Vector3(225.3f, 179.23f, 154.9f); 
+			
+			//Check if the ability is on cooldown
+			if(nextAttack > Time.time)
+				return;
+			
+			player.playAnimation(animationName);
+			/*
+			 * To find enemies in a cone, we first use Physics.OverlapSphere to find all enemies close to our position.
+			 * We then iterate through each enemy, and use the dot product of the direction an forward vectors to determine
+			 * if the enemy is in the cone.
+			 * */
+			Vector3 position = player.gameObject.transform.position;
+			Collider[] enemies = Physics.OverlapSphere(position, 30);
+			foreach(Collider enemyCol in enemies){
+				MinionScript enemy = enemyCol.gameObject.GetComponent(typeof(MinionScript)) as MinionScript;
+				if(enemy){
+					Vector3 direction = Vector3.Normalize(enemy.gameObject.transform.position - player.gameObject.transform.position);
+					float dot = Vector3.Dot(direction, player.gameObject.transform.forward);
+					if(dot > 0.707f)
+						enemy.damage((float)totalDamage);
+				}
+			}
+			
+			nextAttack = Time.time + coolDown;
 		}
 		
 		public void setScript(GarenScript script){
 			player = script;
+		}
+		
+		public float getCooldown(){
+			if(Time.time > nextAttack)
+				return 0;
+			else
+				return (float)((nextAttack - Time.time) / coolDown);
 		}
 		
 	}
@@ -136,6 +224,8 @@ public class GarenScript : MonoBehaviour {
 		private bool active = false;
 		private float cooldown = 5;
 		private float nextAttack = 0;
+		private string animationName = "Spell2";
+	
 		
 		public void Update(){
 			if(nextAttack < Time.time && active){
@@ -146,8 +236,14 @@ public class GarenScript : MonoBehaviour {
 		}
 		
 		public void Execute(){
+			
+			//Check if on cooldown
+			if(Time.time < nextAttack)
+				return;
+			
 			player.activateCourage(true);
 			nextAttack = Time.time + cooldown;
+			player.playAnimation(animationName);
 			active = true;
 			Debug.Log("Courage active!");
 		}
@@ -155,29 +251,43 @@ public class GarenScript : MonoBehaviour {
 		public void setScript(GarenScript script){
 			player = script;
 		}
+		
+		public float getCooldown(){
+			if(Time.time > nextAttack)
+				return 0;
+			else
+				return (float)((nextAttack - Time.time) / cooldown);
+		}
 	}
 	
+	/*
+	 * To simulate damage over time, judgement uses a variable called "numTicks". While numTicks > 0, every
+	 * second nearby enemies are damage for totalDamage / numTicks damage (calculated when numTicks is at its original value),
+	 * and numTicks is decremented by one. This allows for even distribution of damage over time, and ensures that enemies are 
+	 * able to "run away" from the damage zone.
+	 * */
 	class Judgement : Ability {
 		private GarenScript player;
-		private float timeTillFinished = 0;
+		private float nextTickTime = 0;
+		private int radius = 30;
+		private int numTicks = 0;
+		private double totalDamage = 70;
+		private double damagePerTick = 0;
+		private double nextAttack = 0;
+		private double coolDown = 10;
 		public void Execute(){
 			
 			//If this ability is on cooldown, don't do anything.
 			//TODO Play "On Cooldown" sound?
-			if(timeTillFinished > Time.time)
+			if(nextAttack > Time.time)
 				return;
 			
+			numTicks = 3;
+			damagePerTick = totalDamage / (double)numTicks; //TODO Calculate damage using equipment and skills
+			nextAttack = Time.time + coolDown; //Put ability on cooldown
 			
-			//Update Collider
-			BoxCollider collider = player.getConeCollider();
-			collider.enabled = true;
-			collider.center = new Vector3(12.7f, 104.9f, 52.8f);
-			collider.size = new Vector3(316.1f, 179.23f, 328.3f); 
-			
-			
-			//SPIN TO WIN!!!!!
+			//SPIN TO WIN!!!!! (animation)
 			player.setSpinning(true);
-			timeTillFinished = Time.time + 3.0f;
 		}
 		
 		public void setScript(GarenScript script){
@@ -185,23 +295,137 @@ public class GarenScript : MonoBehaviour {
 		}
 		
 		public void Update(){
-			if(timeTillFinished < Time.time && player.isSpinning()){
+			
+			//If there are still ticks of damage to be applied, and it's time for another tick.
+			if(numTicks > 0 && Time.time > nextTickTime){
+				Vector3 position = player.gameObject.transform.position;
+				Collider[] targets = Physics.OverlapSphere(position, radius);
+				foreach(Collider t in targets){
+					MinionScript enemy = t.gameObject.GetComponent(typeof(MinionScript)) as MinionScript;
+					if(enemy){
+						enemy.damage((float)damagePerTick);
+					}
+				}
+				
+				nextTickTime = Time.time + 1;
+				numTicks--;
+			}
+			
+			//If the player is spinning, but no damage can be applied, stop spinning.
+			else if(numTicks <= 0 && player.isSpinning()){
 				player.setSpinning(false);
 			}
 		}
+		
+		public float getCooldown(){
+			if(Time.time > nextAttack)
+				return 0;
+			else
+				return (float)((nextAttack - Time.time) / coolDown);
+		}
 	}
 	
-	void OnTriggerEnter(Collider other) {
-		//TODO This trigger is used for all non-single target abilities
-		//We need to make a state system that will determine which ability
-		//was used last, and apply damage / debuffs based on that.
+	class Demacian_Justice : Ability {
+		private GarenScript player;
+		private float cooldown = 120;
+		private float nextAttack = 0;
+		private int numPossibleTargets = 5;
+		private int radius = 60;
+		private string animationName = "Spell4";
 		
-		coneCollider.enabled = false;
-		MinionScript enemy = other.gameObject.GetComponent(typeof(MinionScript)) as MinionScript;
-		//if(enemy && Time.time > nextAttack){
-			//nextAttack = Time.time + 5;
-			enemy.damage(50);
-		//}
-        Debug.Log("Hit!");
-    }
+		public void Execute(){
+			
+			//If on cooldown, return
+			if(Time.time < nextAttack)
+				return;
+			
+			player.playAnimation(animationName);
+			
+			nextAttack = Time.time + cooldown;
+			Vector3 position = player.gameObject.transform.position;
+			MinionScript[] enemies = new MinionScript[numPossibleTargets];
+			int index = 0;
+			Collider[] targets = Physics.OverlapSphere(position, radius);
+			foreach(Collider t in targets){
+				MinionScript enemy = t.gameObject.GetComponent(typeof(MinionScript)) as MinionScript;
+				if(enemy){
+				enemies[index++] = enemy;
+				if(index > numPossibleTargets - 1) //If the maximum number of targets has been reached, stop adding new ones.
+					break;
+					}
+				}
+			
+			//If there are no enemies to hit, return
+			if(index == 0) 
+				return;
+			
+			float damagePerTarget = (player.WeaponDamage * 3.0f) / index;
+			foreach(MinionScript enemy in enemies){
+				if(enemy){
+					enemy.damage(damagePerTarget);
+					enemy.stun(1.5f);
+				}
+			}
+		}
+		
+		public void setScript(GarenScript script){
+			player = script;
+		}
+		
+		public float getCooldown(){
+			if(Time.time > nextAttack)
+				return 0;
+			else
+				return (float)((nextAttack - Time.time) / cooldown);
+		}
+	}
+	
+	class Valor : Ability {
+		private GarenScript player;
+		private float nextAttack = 0;
+		private int numPossibleTargets = 3;
+		private int radius = 30;
+		private string animationName = "Attack2";
+		
+		public void Execute(){
+			
+			//If on cooldown, return
+			if(Time.time < nextAttack)
+				return;
+			
+			player.playAnimation(animationName);
+			
+			nextAttack = Time.time + player.WeaponSpeed;
+			Vector3 position = player.gameObject.transform.position;
+			MinionScript[] enemies = new MinionScript[numPossibleTargets];
+			int index = 0;
+			Collider[] targets = Physics.OverlapSphere(position, radius);
+			foreach(Collider t in targets){
+				MinionScript enemy = t.gameObject.GetComponent(typeof(MinionScript)) as MinionScript;
+				if(enemy){
+					Vector3 direction = Vector3.Normalize(enemy.gameObject.transform.position - player.gameObject.transform.position);
+					float dot = Vector3.Dot(direction, player.gameObject.transform.forward);
+					if(dot > 0.707f){
+						enemies[index++] = enemy;
+						if(index > numPossibleTargets - 1) //If the maximum number of targets has been reached, stop adding new ones.
+						break;
+					}
+				}
+			}
+			
+			//If there are no enemies to hit, return
+			if(index == 0) 
+				return;
+			
+			float damagePerTarget = player.WeaponDamage * 0.5f;
+			foreach(MinionScript enemy in enemies){
+				if(enemy)
+					enemy.damage(damagePerTarget);
+			}
+		}
+		
+		public void setScript(GarenScript script){
+			player = script;
+		}
+	}
 }

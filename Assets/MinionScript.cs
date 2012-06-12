@@ -21,6 +21,10 @@ public class MinionScript : MonoBehaviour {
 		p.transform.localScale = currentScale;
 	}
 	
+	public void stun(float time){
+		;//Stun duration	
+	}
+	
 	public void damage(float amount){
 		currentHealth -= amount;
 		if(currentHealth < 0)

@@ -33,7 +33,11 @@ public class MouseMovement : MonoBehaviour {
 				
 				if(enemy && Time.time > nextAttack){
 					nextAttack = Time.time + 5;
-					enemy.damage(20);
+					player.playAnimation("Attack1");
+					enemy.damage(20); //TODO Calculate auto attack damage
+					Vector3 enemyLookAt = enemy.gameObject.transform.position;
+					enemyLookAt.y = 25.20f;
+					transform.LookAt(enemyLookAt);
 				}
 				else{
 			    dest = hit.point;
@@ -42,8 +46,8 @@ public class MouseMovement : MonoBehaviour {
 				direction.y = 22.20f;
 				if(direction.magnitude > 1)
 					direction = direction.normalized;
-				}
 				transform.LookAt(dest);
+				}
 			}
 		}
 		
