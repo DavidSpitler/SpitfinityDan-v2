@@ -46,10 +46,14 @@
   <ItemGroup>
      <Compile Include="Assets\Ability.cs" />
      <Compile Include="Assets\CamTargetScript.cs" />
+     <Compile Include="Assets\CasterMinion.cs" />
      <Compile Include="Assets\EnemyHealthBarRotation.cs" />
-     <Compile Include="Assets\GarenScript.cs" />
+     <Compile Include="Assets\Garen.fbm\GarenScript.cs" />
+     <Compile Include="Assets\HealthOrbScript.cs" />
      <Compile Include="Assets\MinionScript.cs" />
      <Compile Include="Assets\MouseMovement.cs" />
+     <Compile Include="Assets\PickUp.cs" />
+     <Compile Include="Assets\ProjectileScript.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Basic.shader" />
