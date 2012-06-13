@@ -31,13 +31,15 @@ public class MouseMovement : MonoBehaviour {
 			if(Physics.Raycast(ray, out hit, 10000)){
 				MinionScript enemy = hit.collider.gameObject.GetComponent(typeof(MinionScript)) as MinionScript;
 				
-				if(enemy && Time.time > nextAttack){
+				
+				if(enemy && Time.time > nextAttack && ((enemy.gameObject.transform.position - player.gameObject.transform.position).magnitude <= player.getRange())){
 					nextAttack = Time.time + 5;
 					player.playAnimation("Attack1");
-					enemy.damage(20); //TODO Calculate auto attack damage
+					enemy.damage(player.getWeaponDamage()); //TODO Calculate auto attack damage
 					Vector3 enemyLookAt = enemy.gameObject.transform.position;
 					enemyLookAt.y = 25.20f;
 					transform.LookAt(enemyLookAt);
+					player.setCurrentEnemy(enemy);
 				}
 				else{
 			    dest = hit.point;

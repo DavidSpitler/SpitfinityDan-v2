@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections;
 
 public class GarenScript : MonoBehaviour {
+<<<<<<< HEAD
+=======
+	public BoxCollider coneCollider;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	
 	//Spells
 	private Decisive_Strike dStrike;
@@ -10,34 +14,50 @@ public class GarenScript : MonoBehaviour {
 	private Demacian_Justice dJustice;
 	private Valor valor;
 	
+<<<<<<< HEAD
 	//Spell textures
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	public Texture2D dStrikeTexture;
 	public Texture2D courageTexture;
 	public Texture2D judgementTexture;
 	public Texture2D dJusticeTexture;
 	
+<<<<<<< HEAD
 	
 	//Health textures
 	public Texture2D enemyHealthTexture;
 	public Texture2D playerHealthTexture;
 	
 	private bool alive;
+=======
+	public Texture2D healthTexture;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	
 	
 	private float nextAttack = 0;
 	private float currentHealth;
+<<<<<<< HEAD
 	private float maxHealth = 100;
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	private bool courageActive;
 	private Quaternion originalRotation;
 	private bool spinning;
 	private Animation a;
 	private bool running;
+<<<<<<< HEAD
 	private float range = 30;
 	private bool idling;
 	private float pickUpRange = 10;
 	
 	
 	private float WeaponDamage = 20;
+=======
+	private float range = 100;
+	
+	private float WeaponDamage = 5;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	private float WeaponSpeed = 1.5f;
 	
 	private int IconWidth;
@@ -77,12 +97,19 @@ public class GarenScript : MonoBehaviour {
 		GUI.EndGroup();
 		
 		//Current Enemy Healthbar
+<<<<<<< HEAD
 		int buttonLength = 300;
 		if(currentEnemy){
+=======
+		
+		if(currentEnemy){
+		int buttonLength = 300;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		
 			GUI.Box(new Rect((Screen.width / 2) - (buttonLength / 2), 40, buttonLength, 30), "");
 			
 			GUI.BeginGroup(new Rect((Screen.width / 2) - (buttonLength / 2), 40, buttonLength * currentEnemy.getHealthPercent(), 30));
+<<<<<<< HEAD
 			GUI.Box(new Rect(0, 0, buttonLength,30) , enemyHealthTexture);
 			GUI.EndGroup();
 		}
@@ -93,12 +120,21 @@ public class GarenScript : MonoBehaviour {
 			GUI.BeginGroup(new Rect((Screen.width / 2) - (buttonLength / 2), Screen.height - 120, buttonLength * getHealthPercent(), 30));
 			GUI.Box(new Rect(0, 0, buttonLength,30) , playerHealthTexture);
 			GUI.EndGroup();
+=======
+			GUI.Box(new Rect(0, 0, buttonLength,30) , healthTexture);
+			GUI.EndGroup();
+		}
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	}
 	
 	// Use this for initialization
 	void Start () {
+<<<<<<< HEAD
 		
 		currentHealth = maxHealth;
+=======
+		coneCollider.enabled = false;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		
 		//Initialize Abilities - TODO Should this be done statically?
 		dStrike = new Decisive_Strike();
@@ -118,12 +154,16 @@ public class GarenScript : MonoBehaviour {
 		//Initially not running
 		running = false;
 		
+<<<<<<< HEAD
 		idling = true;
 		
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		a = gameObject.GetComponent(typeof(Animation)) as Animation;
 		
 		originalRotation = transform.localRotation;
 		spinning = false;
+<<<<<<< HEAD
 		
 		alive = true;
 	}
@@ -133,6 +173,14 @@ public class GarenScript : MonoBehaviour {
 	void Update () {
 		if(!alive)
 			return;
+=======
+	}
+	
+	
+	
+	// Update is called once per frame
+	void Update () {
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		
 		//Check for spells being cast
 		if(Input.GetKeyDown(KeyCode.Alpha1)){
@@ -155,6 +203,7 @@ public class GarenScript : MonoBehaviour {
 			valor.Execute();
 		}
 		
+<<<<<<< HEAD
 		if(running && !a.IsPlaying("Run") && !a.IsPlaying("Spell3")) {
 			a.Stop();
 			a.Play("Run");
@@ -162,10 +211,19 @@ public class GarenScript : MonoBehaviour {
 		}
 		else if (!a.isPlaying)
 			a.Play("Idle1");
+=======
+		if(running && a.IsPlaying("Idle2")) {
+			a.Stop();
+			a.Play("Run");
+		}
+		else if (!a.isPlaying)
+			a.Play("Idle2");
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		
 		//Update all spells
 		courage.Update();
 		judgement.Update();
+<<<<<<< HEAD
 		
 		//Pick up any items within range
 		Collider[] items = Physics.OverlapSphere(gameObject.transform.position, pickUpRange);
@@ -204,16 +262,22 @@ public class GarenScript : MonoBehaviour {
 	
 	public float getHealthPercent(){
 		return currentHealth / maxHealth;
+=======
+	
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	}
 	
 	public void setCurrentEnemy(MinionScript enemy){
 		this.currentEnemy = enemy;	
 	}
 	
+<<<<<<< HEAD
 	public void setIdling(bool idle){
 		idling = idle;
 	}
 	
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	public MinionScript getCurrentEnemy(){
 		return currentEnemy;	
 	}
@@ -222,10 +286,13 @@ public class GarenScript : MonoBehaviour {
 		return WeaponDamage;	
 	}
 	
+<<<<<<< HEAD
 	public float getWeaponSpeed(){
 		return WeaponSpeed;
 	}
 	
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	public void playAnimation(string animationName){
 		a.Stop();
 		a.Play(animationName);
@@ -253,6 +320,7 @@ public class GarenScript : MonoBehaviour {
 	public float getRange(){
 		return range;
 	}
+<<<<<<< HEAD
 	
 	public void awardHealth(float amount){
 		//Calculate additional healing based on passive or skills
@@ -261,6 +329,8 @@ public class GarenScript : MonoBehaviour {
 			currentHealth = maxHealth;
 	}
 	
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	public void damage(float amount){
 		//Compute damage reductions
 		if(courageActive)
@@ -268,16 +338,22 @@ public class GarenScript : MonoBehaviour {
 		
 		//Apply damage
 		currentHealth -= amount;
+<<<<<<< HEAD
 		if(currentHealth < 0){
 			currentHealth = 0;
 			alive = false;
 			a.Stop();
 			a.Play("Death");
 		}
+=======
+		if(currentHealth < 0)
+			currentHealth = 0;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		
 		//Check for death
 	}
 	
+<<<<<<< HEAD
 	/*
 	 * Returns the time of the next auto-attack
 	 * */
@@ -292,6 +368,16 @@ public class GarenScript : MonoBehaviour {
 		
 		private GarenScript player;
 		private double totalDamage;
+=======
+	public BoxCollider getConeCollider(){
+		return coneCollider;
+	}
+	
+	class Decisive_Strike : Ability {
+		
+		private GarenScript player;
+		private double totalDamage = 60;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		private float nextAttack = 0;
 		private float coolDown = 5;
 		private string animationName = "Spell1";
@@ -326,8 +412,11 @@ public class GarenScript : MonoBehaviour {
 		
 		public void setScript(GarenScript script){
 			player = script;
+<<<<<<< HEAD
 			
 			totalDamage = player.getWeaponDamage() * 1.6f;
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		}
 		
 		public float getCooldown(){
@@ -391,7 +480,11 @@ public class GarenScript : MonoBehaviour {
 		private float nextTickTime = 0;
 		private int radius = 30;
 		private int numTicks = 0;
+<<<<<<< HEAD
 		private double totalDamage;
+=======
+		private double totalDamage = 70;
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		private double damagePerTick = 0;
 		private double nextAttack = 0;
 		private double coolDown = 10;
@@ -412,7 +505,10 @@ public class GarenScript : MonoBehaviour {
 		
 		public void setScript(GarenScript script){
 			player = script;
+<<<<<<< HEAD
 			totalDamage = 1.8f * player.getWeaponDamage();
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 		}
 		
 		public void Update(){
@@ -444,7 +540,10 @@ public class GarenScript : MonoBehaviour {
 			else
 				return (float)((nextAttack - Time.time) / coolDown);
 		}
+<<<<<<< HEAD
 		
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 	}
 	
 	class Demacian_Justice : Ability {
@@ -550,5 +649,8 @@ public class GarenScript : MonoBehaviour {
 			player = script;
 		}
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> c138f94fdc91f6ce5b9f44ce07529bf9a3836dd7
 }
