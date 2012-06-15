@@ -112,7 +112,7 @@ public class MinionScript : MonoBehaviour {
 	}
 	
 	public void stun(float time){
-		;//Stun duration	
+		Debug.Log ("Stunned for " + time + "seconds");//Stun duration	
 	}
 	
 	public float getHealthPercent(){
@@ -136,6 +136,9 @@ public class MinionScript : MonoBehaviour {
 		}
 	}
 	
+	public Vector3 getDest(){
+		return dest;
+	}
 	private void DropLoot(){
 		if(Random.value >= 0.5f)
 		{
